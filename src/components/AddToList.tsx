@@ -36,21 +36,8 @@ const AddToList: React.FC<IProps> = ({setToys, toys  }) => {
         "type": "car"
 
      */
-    const handleClick = async () => {
+    async function handleClick() {
         if (!input.type || !input.name || !input.size) return
-        setToys([
-            ...toys,
-            {
-                name: input.name,
-                size: input.size,
-                speed: parseInt(input.speed),
-                distance: parseInt(input.distance),
-                wheels: parseInt(input.wheels),
-                type: input.type,
-                url: input.url,
-                note: input.note
-            }
-        ])
         const response = await fetch("http://localhost:8080/main/toys/add", {
             method: "POST",
             headers: {"Content-Type": "application/json"},
@@ -61,7 +48,6 @@ const AddToList: React.FC<IProps> = ({setToys, toys  }) => {
                 distance: input.distance,
                 wheels: parseInt(input.wheels),
                 type: input.type
-
             }),
         });
         const responseText = await response.text();
@@ -105,7 +91,9 @@ const AddToList: React.FC<IProps> = ({setToys, toys  }) => {
                 className="AddToList-input"
                 name="size"
             >
-                <option value="S">S</option>
+                <option value="">Select a size</option>
+                <option value="XS">XS</option>
+                <option value="S">XS</option>
                 <option value="M">M</option>
                 <option value="L">L</option>
                 <option value="XL">XL</option>
@@ -144,6 +132,7 @@ const AddToList: React.FC<IProps> = ({setToys, toys  }) => {
                 className="AddToList-input"
                 name="type"
             >
+                <option value="">Select Thing</option>
                 <option value="car">Car</option>
                 <option value="truck">Truck</option>
                 <option value="plane">Airplane</option>

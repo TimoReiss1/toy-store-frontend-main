@@ -28,7 +28,6 @@ function App() {
             try{
                 const response = await fetch('http://localhost:8080/main/toys');
                 const toysFromAPI = await response.json();
-                console.log(toysFromAPI)
                 setToys(toysFromAPI);
             }catch(error){
                 console.error(error);
