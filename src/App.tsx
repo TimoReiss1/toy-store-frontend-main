@@ -9,8 +9,8 @@ export interface IState {
         name: string
         size: string
         speed: number
-        distance: number
-        wheels? : number
+        distanceTraveled: number
+        amountOfWheels? : number
         type: string
         url?: string
         note?: string
@@ -23,6 +23,7 @@ function App() {
 
     ])
 
+/*
     useEffect( () => {
         async function fetchData(){
             try{
@@ -33,8 +34,12 @@ function App() {
                 console.error(error);
             }
         }
-        fetchData();
+        fetchData()
     })
+
+ */
+
+
 
   return (
       <div className="App">

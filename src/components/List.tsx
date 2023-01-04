@@ -16,9 +16,9 @@ const List: React.FC<IProps> = ({ toys }) => {
                     </div>
                     <p>{toy.name}</p>
                     <p>{toy.size}</p>
-                    <p>Distance: {toy.distance}</p>
-                    <p>Speed: {toy.speed}</p>
-                    <p>Wheels: {toy.wheels}</p>
+                    <p>Distance: {toy.distanceTraveled}</p>
+                    <p>Spd: {toy.speed}</p>
+                    <p>Wheels: {toy.amountOfWheels}</p>
                     <p className="List-note">{toy.note}</p>
                 </li>
             )

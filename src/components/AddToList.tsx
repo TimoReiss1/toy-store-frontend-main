@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, {useEffect, useState} from 'react'
 import { IState as Props } from "../App";
 
 interface IProps {
@@ -8,13 +8,12 @@ interface IProps {
 
 const AddToList: React.FC<IProps> = ({setToys, toys  }) => {
 
-
     const [input, setInput] = useState({
         name: "",
         size: "",
         speed: "",
-        distance: "",
-        wheels : "",
+        distanceTraveled: "",
+        amountOfWheels : "",
         type: "",
         url: "",
         note: ""
@@ -27,6 +26,19 @@ const AddToList: React.FC<IProps> = ({setToys, toys  }) => {
         })
     }
 
+    const [searchQuery, setSearchQuery] = useState('');
+
+    const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchQuery(event.target.value);
+    }
+
+    const handleSearch = async () => {
+        const response = await fetch('http://localhost:8080/main/toys');
+        const toys = await response.json();
+        const filteredToys = toys.filter((toy: { type: string; }) => toy.type === searchQuery);
+        setToys(filteredToys);
+    }
+
     /*
         "name": "Im a Car too!",
         "size": "XL",
@@ -37,16 +49,22 @@ const AddToList: React.FC<IProps> = ({setToys, toys  }) => {
 
      */
     async function handleClick() {
-        if (!input.type || !input.name || !input.size) return
+        if (!input.type || !input.name || !input.size || !input.distanceTraveled || !input.speed) return
+
+        let amountOfWheels = parseInt(input.amountOfWheels);
+        if (input.type !== 'car' && input.type !== 'Truck') {
+            amountOfWheels = 0;
+        }
+
         const response = await fetch("http://localhost:8080/main/toys/add", {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({
                 name: input.name,
                 size: input.size,
-                speed: input.speed,
-                distance: input.distance,
-                wheels: parseInt(input.wheels),
+                speed: parseInt(input.speed),
+                distanceTraveled: parseInt(input.distanceTraveled),
+                amountOfWheels: amountOfWheels,
                 type: input.type
             }),
         });
@@ -64,8 +82,8 @@ const AddToList: React.FC<IProps> = ({setToys, toys  }) => {
             name: "",
             size: "",
             speed: "",
-            distance: "",
-            wheels: "",
+            distanceTraveled: "",
+            amountOfWheels: "",
             type: "",
             url: "",
             note: ""
@@ -76,6 +94,10 @@ const AddToList: React.FC<IProps> = ({setToys, toys  }) => {
     return (
 
         <div className="AddToList">
+
+            <input type="text" placeholder="Search by type" onChange={handleSearchChange} value={searchQuery} />
+            <button onClick={handleSearch}>Search</button>
+
             <input
                 type="text"
                 onChange={handleChange}
@@ -84,7 +106,6 @@ const AddToList: React.FC<IProps> = ({setToys, toys  }) => {
                 value={input.name}
                 placeholder="Name"
             />
-
             <select
                 value={input.size}
                 onChange={handleChange}
@@ -98,7 +119,6 @@ const AddToList: React.FC<IProps> = ({setToys, toys  }) => {
                 <option value="L">L</option>
                 <option value="XL">XL</option>
             </select>
-
             <input
                 type="text"
                 onChange={handleChange}
@@ -108,23 +128,13 @@ const AddToList: React.FC<IProps> = ({setToys, toys  }) => {
                 placeholder="Speed"
             />
             <input
-                type="text"
+                value={input.distanceTraveled}
                 onChange={handleChange}
+                type="text"
                 className="AddToList-input"
                 name="distance"
-                value={input.distance}
                 placeholder="Distance"
             />
-
-            <input
-                type="text"
-                onChange={handleChange}
-                className="AddToList-input"
-                name="wheels"
-                value={input.wheels}
-                placeholder="Number of wheels"
-            />
-
 
             <select
                 value={input.type}
@@ -138,6 +148,18 @@ const AddToList: React.FC<IProps> = ({setToys, toys  }) => {
                 <option value="plane">Airplane</option>
                 <option value="boat">Boat</option>
             </select>
+
+            {input.type === 'car' &&
+                <input
+                    type="text"
+                    onChange={handleChange}
+                    className="AddToList-input"
+                    name="wheels"
+                    value={input.amountOfWheels}
+                    placeholder="Number of wheels"
+                />
+            }
+
 
             <input
                 type="text"
@@ -155,6 +177,7 @@ const AddToList: React.FC<IProps> = ({setToys, toys  }) => {
                 value={input.note}
                 placeholder="Note"
             />
+
             <button
                 onClick={handleClick}
                 className="AddToList-btn"
