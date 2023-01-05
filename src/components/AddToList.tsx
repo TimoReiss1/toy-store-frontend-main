@@ -89,8 +89,8 @@ const AddToList: React.FC<IProps> = ({setToys, toys  }) => {
     }
 
     return (
-
         <div className="AddToList">
+            <h1>.:EOS:. Toy Store</h1>
             <List toys={toys}/>
             <select
                 value={searchQuery}

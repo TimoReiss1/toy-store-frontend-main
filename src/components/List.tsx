@@ -26,9 +26,11 @@ const List: React.FC<IProps> = ({ toys }) => {
     }
 
     return (
+        <div className="list-of-stored-toys">
         <ul>
             {renderList()}
         </ul>
+        </div>
     )
 }
 
