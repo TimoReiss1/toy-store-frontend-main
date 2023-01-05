@@ -1,10 +1,12 @@
 import React, {useEffect, useState} from 'react'
 import { IState as Props } from "../App";
+import List from "./List";
 
 interface IProps {
     setToys: React.Dispatch<React.SetStateAction<Props["toys"]>>
     toys: Props["toys"]
 }
+
 
 const AddToList: React.FC<IProps> = ({setToys, toys  }) => {
 
@@ -28,7 +30,7 @@ const AddToList: React.FC<IProps> = ({setToys, toys  }) => {
 
     const [searchQuery, setSearchQuery] = useState('');
 
-    const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleSearchChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         setSearchQuery(event.target.value);
     }
 
@@ -36,7 +38,8 @@ const AddToList: React.FC<IProps> = ({setToys, toys  }) => {
         const response = await fetch('http://localhost:8080/main/toys');
         const toys = await response.json();
         const filteredToys = toys.filter((toy: { type: string; }) => toy.type === searchQuery);
-        setToys(filteredToys);
+        console.log(filteredToys)
+        setToys(filteredToys)
     }
 
     /*
@@ -51,11 +54,6 @@ const AddToList: React.FC<IProps> = ({setToys, toys  }) => {
     async function handleClick() {
         if (!input.type || !input.name || !input.size || !input.distanceTraveled || !input.speed) return
 
-        let amountOfWheels = parseInt(input.amountOfWheels);
-        if (input.type !== 'car' && input.type !== 'Truck') {
-            amountOfWheels = 0;
-        }
-
         const response = await fetch("http://localhost:8080/main/toys/add", {
             method: "POST",
             headers: {"Content-Type": "application/json"},
@@ -63,8 +61,8 @@ const AddToList: React.FC<IProps> = ({setToys, toys  }) => {
                 name: input.name,
                 size: input.size,
                 speed: parseInt(input.speed),
-                distanceTraveled: parseInt(input.distanceTraveled),
-                amountOfWheels: amountOfWheels,
+                distanceTraveled: input.distanceTraveled,
+                amountOfWheels: input.amountOfWheels,
                 type: input.type
             }),
         });
@@ -90,12 +88,17 @@ const AddToList: React.FC<IProps> = ({setToys, toys  }) => {
         })
     }
 
-
     return (
 
         <div className="AddToList">
-
-            <input type="text" placeholder="Search by type" onChange={handleSearchChange} value={searchQuery} />
+            <List toys={toys}/>
+            <select
+                value={searchQuery}
+                onChange={handleSearchChange}
+                placeholder="Search by type">
+                <option value="">Select a Type</option>
+                <option value="car">Car</option>
+            </select>
             <button onClick={handleSearch}>Search</button>
 
             <input
@@ -132,7 +135,7 @@ const AddToList: React.FC<IProps> = ({setToys, toys  }) => {
                 onChange={handleChange}
                 type="text"
                 className="AddToList-input"
-                name="distance"
+                name="distanceTraveled"
                 placeholder="Distance"
             />
 
@@ -154,12 +157,11 @@ const AddToList: React.FC<IProps> = ({setToys, toys  }) => {
                     type="text"
                     onChange={handleChange}
                     className="AddToList-input"
-                    name="wheels"
+                    name="amountOfWheels"
                     value={input.amountOfWheels}
                     placeholder="Number of wheels"
                 />
             }
-
 
             <input
                 type="text"
@@ -189,3 +191,56 @@ const AddToList: React.FC<IProps> = ({setToys, toys  }) => {
 }
 
 export default AddToList
+
+/*
+****** Verifying my auth token *******
+* async function verifyAuthToken() {
+const response = await fetch('/verify-auth-token', {
+headers: {
+  Authorization: `Bearer ${authToken}`,
+},
+});
+if (response.ok) {
+// Token is valid
+} else {
+// Token is invalid
+}
+}
+
+
+******Set Auth token after successfully logging in*****
+async function handleLogin(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const response = await fetch('/login', {
+        method: 'POST',
+        body: JSON.stringify({
+        email: email,
+        password: password,
+    }),
+});
+const data = await response.json();
+setAuthToken(data.authToken);
+}
+
+******** Extract Cookie from Data ***************
+*
+*
+useEffect(() => {
+const authToken = getAuthTokenFromCookie();
+setAuthToken(authToken);
+}, []);
+*
+*
+function getAuthTokenFromCookie(): string | null {
+const cookies = document.cookie.split(';');
+for (const cookie of cookies) {
+const [name, value] = cookie.split('=');
+if (name.trim() === 'authToken') {
+  return value;
+}
+}
+return null;
+}
+
+
+ */

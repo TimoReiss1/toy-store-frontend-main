@@ -1,8 +1,11 @@
-import React, {useState, Component, useEffect} from 'react';
+import React, {useState, Component, useEffect, FC} from 'react';
 import logo from './logoAsThree.svg';
 import './App.css';
 import List from "./components/List";
+import {BrowserRouter, Routes, Route} from 'react-router-dom';
 import AddToList from './components/AddToList';
+import LoginForm from './components/LoginForm';
+import * as ReactDOM from 'react-dom';
 
 export interface IState {
     toys: {
@@ -18,6 +21,7 @@ export interface IState {
 }
 
 function App() {
+
 
     const [toys, setToys] = useState<IState["toys"]>([
 
@@ -38,9 +42,7 @@ function App() {
     })
 
  */
-
-
-
+    /*
   return (
       <div className="App">
           <img src={logo} alt="Logo" style={{ width: '350px', height: '350px' }} />
@@ -50,6 +52,17 @@ function App() {
         <AddToList setToys={setToys} toys={toys}/>
       </div>
   );
+ */
+    return (
+        <BrowserRouter>
+            <Routes>
+                <Route path="/" element={<AddToList setToys={setToys} toys={toys} /> } />
+                <Route path="login" element={<LoginForm onSubmit={(username, password) => console.log(username,password)}/> }/>
+            </Routes>
+        </BrowserRouter>
+    );
+
+
 }
 
 export default App;
