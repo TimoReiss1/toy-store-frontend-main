@@ -28,6 +28,8 @@ function App() {
     ])
 
 /*
+Leeres Array -> Init 1x
+
     useEffect( () => {
         async function fetchData(){
             try{
